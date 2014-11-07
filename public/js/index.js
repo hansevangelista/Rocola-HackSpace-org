@@ -36,6 +36,8 @@ $(document).ready(function () {
 
 	socket.on('result', function (result) {
 
+		console.log('result', result[0].tracks[0].uri)
+
 		for (var i = 0; i < 3; i++) {
 
 			var track = {
@@ -44,7 +46,7 @@ $(document).ready(function () {
 			}
 
 			var artist = {
-				name: result[0].artists[i].name
+				// name: result[0].artists[i].name
 			}
 
 			$('.tracks').append(trackTemplate(track))
