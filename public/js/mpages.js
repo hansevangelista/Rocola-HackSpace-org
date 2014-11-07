@@ -1,121 +1,121 @@
 
 function MPages (container, options) {
 
-	"use strict"
+    "use strict";
 
-	var pages = container.children
-	var pos = options.initPage
-	var speed = options.timeSlide
+    var pages = container.children;
+    var pos = options.initPage;
+    var speed = options.timeSlide;
 
-	function setup () {
+    function setup() {
 
-		document.body.style.margin = "0px"
+	document.body.style.margin = "0px";
 
-		container.classList.add("mpages-container")
+	container.classList.add("mpages-container");
 
-		for (var i = 0; i < pages.length; i++)
-			pages[i].classList.add("mpages-page")
+	for (var i = 0; i < pages.length; i++)
+	    pages[i].classList.add("mpages-page");
 
-		setHeights()
+	setHeights();
 
-		window.addEventListener("resize", setHeights)
+	window.addEventListener("resize", setHeights);
 
-		goTo(pos)
+	goTo(pos);
 
-		setAnimationTime()
+	setAnimationTime();
 
-		slides()
-	}
+	slides();
+    }
 
-	function setHeights () {
+    function setHeights () {
 		
-		container.style.height = innerHeight + "px"
+	container.style.height = innerHeight + "px";
 
-		for (var i = 0; i < pages.length; i++)
-			pages[i].style.height = innerHeight + "px"
-	}
+	for (var i = 0; i < pages.length; i++)
+	    pages[i].style.height = innerHeight + "px";
+    }
 
-	function setAnimationTime () {
+    function setAnimationTime () {
 
-		for (var i = 0; i < pages.length; i++) {
+	for (var i = 0; i < pages.length; i++) {
 			
-			var style = pages[i].style
+	    var style = pages[i].style
 
-			style.webkitTransitionProperty =
-			style.MozTransitionProperty =
-			style.msTransitionProperty =
-			style.OTransitionProperty =
-			style.transitionProperty = 'transform';
+	    style.webkitTransitionProperty =
+		style.MozTransitionProperty =
+		style.msTransitionProperty =
+		style.OTransitionProperty =
+		style.transitionProperty = 'transform';
 
-			style.webkitTransitionDuration =
-			style.MozTransitionDuration =
-			style.msTransitionDuration =
-			style.OTransitionDuration =
-			style.transitionDuration = speed + 'ms';
-		}
+	    style.webkitTransitionDuration =
+		style.MozTransitionDuration =
+		style.msTransitionDuration =
+		style.OTransitionDuration =
+		style.transitionDuration = speed + 'ms';
 	}
+    }
 
-	function goTo (pos) {
+    function goTo (pos) {
 
-		for (var i = 0; i < pages.length; i++) {
+	for (var i = 0; i < pages.length; i++) {
 			
-			var style = pages[i].style
+	    var style = pages[i].style;
 
-			style.webkitTransform = 'translate(' + pos * -100 + '%,0)' + 'translateZ(0)';
-			style.msTransform =
-			style.MozTransform =
-			style.OTransform = 'translateX(' + pos * -100 + '%)';
-		}
+	    style.webkitTransform = 'translate(' + pos * -100 + '%,0)' + 'translateZ(0)';
+	    style.msTransform =
+		style.MozTransform =
+		style.OTransform = 'translateX(' + pos * -100 + '%)';
 	}
+    }
 
-	function slides () {
+    function slides () {
 
-		container.addEventListener('touchstart', touchStart);
-		container.addEventListener('touchmove', touchMove);
-		container.addEventListener('touchend', touchEnd);
-	}
+	container.addEventListener('touchstart', touchStart);
+	container.addEventListener('touchmove', touchMove);
+	container.addEventListener('touchend', touchEnd);
+    }
 
-	var start = {}
-	var delta = {}
+    var start = {};
+    var delta = {};
 
-	function touchStart (e) {
+    function touchStart (e) {
 
-		start = {
-			x: e.touches[0].pageX,
-			y: e.touches[0].pageY,
-			time : new Date
-		}
+	start = {
+	    x: e.touches[0].pageX,
+	    y: e.touches[0].pageY,
+	    time : new Date
+	}:
 
-		delta = {}
-	}
+	delta = {}
+    }
 
-	function touchMove (e) {
+    function touchMove (e) {
 
-		delta = {
-			x: e.touches[0].pageX - start.x,
-			y: e.touches[0].pageY - start.y
-		}
-	}
+	delta = {
+	    x: e.touches[0].pageX - start.x,
+	    y: e.touches[0].pageY - start.y
+	};
+    }
 
-	function touchEnd (e) {
+    function touchEnd (e) {
 
-		var duration = new Date - start.time
+	var duration = new Date - start.time;
 
-		var isValid = duration < 250 && Math.abs(delta.x) > 50
+	var isValid = duration < 250 && Math.abs(delta.x) > 50;
 		
-		if(isValid){
+	if(isValid){
 
-			var direction = (delta.x < 0)? 1 : -1
+	    var direction = (delta.x < 0)? 1 : -1;
 			
-			var newPos = pos + direction
+	    var newPos = pos + direction;
 
-			if(newPos >= 0 && newPos < pages.length) {
+	    if(newPos >= 0 && newPos < pages.length) {
 
-				goTo(newPos)
-				pos = newPos
-			}
-		}
+		goTo(newPos);
+		pos = newPos;
+	    }
 	}
+    }
 
-	setup()
-}
+    setup();
+};
