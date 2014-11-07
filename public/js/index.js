@@ -14,11 +14,6 @@ $(document).ready(function () {
 	var artistTemplate = _.template($("#artist").html())
 	var track1Template = _.template($("#track1").html())
 	
-<<<<<<< HEAD
-	// $('.input').change(function () {
-	// 	console.log('change')
-	// })
-=======
     $('.input').change(function () {
 	console.log('change');
     });
@@ -38,18 +33,7 @@ $(document).ready(function () {
 	    artists.html("");
 	}
     });
->>>>>>> Added button with mopidy
 
-	$('.input').keyup(function (e) {
-		// console.log('keyup')
-	    if (e.keyCode == 13) {
-	    	// console.log('enter')
-			socket.emit('search', $('.input').val())
-			$('.result').css('display', 'block')
-			tracks.html("")
-			artists.html("")
-	    }
-	});
     socket.on('result', function (result) {
 
 		// console.log('result', result[0].tracks[0].uri)
