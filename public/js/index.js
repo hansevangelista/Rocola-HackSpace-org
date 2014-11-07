@@ -40,30 +40,30 @@ $(document).ready(function () {
 
 	for (var i = 0; i < 3; i++) {
 
-			var track = {
-				name: result[0].tracks[i].name,
-				album: result[0].tracks[i].album.name,
-				uri: result[0].tracks[i].uri
-			}
+	    var track = {
+		name: result[0].tracks[i].name,
+		album: result[0].tracks[i].album.name,
+		uri: result[0].tracks[i].uri
+	    };
 
-			var artist = {
-				name: result[0].artists[i].name
-			}
+	    var artist = {
+		name: result[0].artists[i].name
+	    };
 
-			$('.tracks').append(trackTemplate(track))
-			$('.artists').append(artistTemplate(artist))
-		}
+	    $('.tracks').append(trackTemplate(track));
+	    $('.artists').append(artistTemplate(artist));
+	}
 
-		socket.emit('add', track)
-	})
+	socket.emit('add', track);
+    });
 
-	socket.on('new', function (track) {
-		console.log(track)
+    socket.on('new', function (track) {
+	console.log(track);
 
-		$('.playlist').append(track1Template(track))
-	})
+	$('.playlist').append(track1Template(track));
+    });
 
-	/* Swipes */
+    /* Swipes */
 
     $('.wraper').on("swiperight", function () {
 	$('.player').css('transform', 'translate(' +  0 + '%, 0) translateZ(0)');
