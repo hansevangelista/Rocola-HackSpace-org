@@ -13,20 +13,15 @@ $(document).ready(function () {
 
 	var trackTemplate = _.template($("#track").html())
 	var artistTemplate = _.template($("#artist").html())
-
-	$('.submit').click(function () {
-		socket.emit('search', $('.input').val())
-	})
 	
-	$('.input').change(function () {
-		console.log('change')
-	})
+	// $('.input').change(function () {
+	// 	console.log('change')
+	// })
 
 	$('.input').keyup(function (e) {
-		console.log('keyup')
+		// console.log('keyup')
 	    if (e.keyCode == 13) {
-	    	console.log('enter')
-	    	
+	    	// console.log('enter')
 			socket.emit('search', $('.input').val())
 			$('.result').css('display', 'block')
 			tracks.html("")
@@ -53,6 +48,10 @@ $(document).ready(function () {
 			$('.artists').append(artistTemplate(artist))
 		}
 	})
+
+
+
+	/* Swipes */
 
     $('.wraper').on("swiperight", function () {
 		$('.player').css('transform', 'translate(' +  0 + '%, 0) translateZ(0)')
