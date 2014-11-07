@@ -10,9 +10,9 @@ $(document).ready(function () {
     var tracks = $('.tracks');
     var artists = $('.artists');
 
-	var trackTemplate = _.template($("#track").html())
-	var artistTemplate = _.template($("#artist").html())
-	var track1Template = _.template($("#track1").html())
+    var trackTemplate = _.template($("#track").html());
+    var artistTemplate = _.template($("#artist").html());
+    var track1Template = _.template($("#track1").html());
 	
     $('.input').change(function () {
 	console.log('change');
