@@ -84,7 +84,7 @@ function MPages (container, options) {
 	    x: e.touches[0].pageX,
 	    y: e.touches[0].pageY,
 	    time : new Date
-	}:
+	};
 
 	delta = {}
     }
