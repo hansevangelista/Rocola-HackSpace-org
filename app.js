@@ -42,11 +42,10 @@ io.on('connection', function(socket){
 
     });
 
-
   });
 
   socket.on('add', function (song) {
-    
+    console.log(song)
     socket.broadcast.emit('new', song)
   })
 
