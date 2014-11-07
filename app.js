@@ -39,11 +39,11 @@ io.on('connection', function(socket){
     // console.log('user disconnected');
   });
 
-  socket.on('search', function(song){
+  socket.on('search', function(term){
 
     // console.log('search')
 
-    mopidy.library.search({any:[song]}, ['spotify:']).then(function(data){
+    mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
       // console.log("data", data)
 
         var uri = data[0].tracks[0].uri;
@@ -60,10 +60,34 @@ io.on('connection', function(socket){
         });
         
         socket.emit('result', data);
-
     });
 
-    // socket.broadcast.emit('new song', song);
 
   });
+
+  socket.on('add', function (song) {
+    
+    socket.broadcast.emit('new', song)
+  })
+
 });
+
+      // var uri = data[0].tracks[0].uri
+      // console.log('uri', uri)
+
+      // mopidy.library.lookup(uri).then(function(track) {
+            
+      //   mopidy.tracklist.clear();
+
+      //   mopidy.tracklist.add(track);
+      
+      //   play();
+      
+      // });
+// function play(){
+//   mopidy.playback.play()
+  
+//   setTimeout(function () {
+//     // mopidy.playback.pause()
+//   }, 10000)
+// }
