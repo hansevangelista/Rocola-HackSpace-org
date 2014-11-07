@@ -22,6 +22,7 @@ var mopidy = new Mopidy({
     webSocketUrl: "ws://localhost:6680/mopidy/ws/"
                    });
 
+
 function play(){
     mopidy.playback.play();
   
@@ -35,55 +36,90 @@ var io = require('socket.io')(server);
 io.on('connection', function(socket){
   // console.log('a user connected');
   
-  socket.on('disconnect', function(){
-    // console.log('user disconnected');
-  });
-
-  socket.on('search', function(term){
-
-    // console.log('search')
-
-    mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
-      // console.log("data", data)
-
-        var uri = data[0].tracks[0].uri;
-        console.log('uri', uri);
-
-        mopidy.library.lookup(uri).then(function(track) {
-            
-            mopidy.tracklist.clear();
-
-            mopidy.tracklist.add(track);
-      
-            play();
-      
-        });
-        
-        socket.emit('result', data);
+    socket.on('disconnect', function(){
+        // console.log('user disconnected');
     });
 
+    socket.on('search', function(term){
 
-  });
+        // console.log('search')
 
-  socket.on('add', function (song) {
+        mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
+            // console.log("data", data)
+
+            var uri = data[0].tracks[0].uri;
+            console.log('uri', uri);
+
+            mopidy.library.lookup(uri).then(function(track) {
+            
+                mopidy.tracklist.clear();
+
+                mopidy.tracklist.add(track);
+      
+                play();
+      
+            });
+        
+            socket.emit('result', data);
+        });
+
+
+    });
     
-    socket.broadcast.emit('new', song)
-  })
+    function Player(){
+        
+        return {
+
+            status: {
+                'now_playing' : null,
+                'error_offline_msg' : "Music Server is offline",
+                'playbackstatus':''
+            },
+            pause: function(){
+	        this.status.playbackstatus = 'PAUSED';
+	        mopidy.playback.pause();
+            },
+            play: function(track){
+	        this.status.playbackstatus = 'PLAYING';
+	        mopidy.playback.play();
+	        
+            },
+            playpause: function(req, res){
+	        if(this.status.playbackstatus == "PLAYING"){
+	            this.pause();
+	        }else{
+	            this.play();
+	        }
+            }
+        };
+    }
+
+    var player = new Player();
+    
+    socket.on('playpause', function(action){
+        player.playpause();
+    });
+    
+    socket.on('add', function (song) {
+    
+        socket.broadcast.emit('new', song);
+    });
+    
 
 });
 
-      // var uri = data[0].tracks[0].uri
-      // console.log('uri', uri)
+// var uri = data[0].tracks[0].uri
+// console.log('uri', uri)
 
-      // mopidy.library.lookup(uri).then(function(track) {
+// mopidy.library.lookup(uri).then(function(track) {
             
-      //   mopidy.tracklist.clear();
+//   mopidy.tracklist.clear();
 
-      //   mopidy.tracklist.add(track);
+//   mopidy.tracklist.add(track);
       
-      //   play();
+//   play();
       
-      // });
+// });
 // function play(){
 //   mopidy.playback.play()
   
