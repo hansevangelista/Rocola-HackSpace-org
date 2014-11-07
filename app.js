@@ -22,16 +22,7 @@ var mopidy = new Mopidy({
     webSocketUrl: "ws://localhost:6680/mopidy/ws/"
                    });
 
-
-function play(){
-    mopidy.playback.play();
-  
-    setTimeout(function () {
-        mopidy.playback.pause();
-    }, 10000);
-}
-
-var io = require('socket.io')(server);
+var io = require('socket.io')(server)
 
 io.on('connection', function(socket){
   // console.log('a user connected');
@@ -40,29 +31,13 @@ io.on('connection', function(socket){
         // console.log('user disconnected');
     });
 
-    socket.on('search', function(term){
+  socket.on('search', function(term){
 
         // console.log('search')
+    mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
+      // console.log("data", data)
 
-        mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
-            // console.log("data", data)
-
-            var uri = data[0].tracks[0].uri;
-            console.log('uri', uri);
-
-            mopidy.library.lookup(uri).then(function(track) {
-            
-                mopidy.tracklist.clear();
-
-                mopidy.tracklist.add(track);
-      
-                play();
-      
-            });
-        
-            socket.emit('result', data);
-        });
-
+      socket.emit('result', data)
 
     });
     
@@ -105,21 +80,27 @@ io.on('connection', function(socket){
         socket.broadcast.emit('new', song);
     });
     
+  });
+
+  socket.on('add', function (song) {
+    console.log(song)
+    socket.broadcast.emit('new', song)
+  })
 
 });
 
-// var uri = data[0].tracks[0].uri
-// console.log('uri', uri)
+      // var uri = data[0].tracks[0].uri
+      // console.log('uri', uri)
 
-// mopidy.library.lookup(uri).then(function(track) {
+      // mopidy.library.lookup(uri).then(function(track) {
             
-//   mopidy.tracklist.clear();
+      //   mopidy.tracklist.clear();
 
-//   mopidy.tracklist.add(track);
+      //   mopidy.tracklist.add(track);
       
-//   play();
+      //   play();
       
-// });
+      // });
 // function play(){
 //   mopidy.playback.play()
   
