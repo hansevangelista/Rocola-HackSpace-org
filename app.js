@@ -22,7 +22,35 @@ var mopidy = new Mopidy({
     webSocketUrl: "ws://localhost:6680/mopidy/ws/"
                    });
 
-var io = require('socket.io')(server)
+var io = require('socket.io')(server);
+
+function Player(){
+    
+    return {
+
+        status: {
+            'now_playing' : null,
+            'error_offline_msg' : "Music Server is offline",
+            'playbackstatus':''
+        },
+        pause: function(){
+	    this.status.playbackstatus = 'PAUSED';
+	    mopidy.playback.pause();
+        },
+        play: function(track){
+	    this.status.playbackstatus = 'PLAYING';
+	    mopidy.playback.play();
+	    
+        },
+        playpause: function(req, res){
+	    if(this.status.playbackstatus == "PLAYING"){
+	        this.pause();
+	    }else{
+	        this.play();
+	    }
+        }
+    };
+}
 
 io.on('connection', function(socket){
   // console.log('a user connected');
@@ -31,43 +59,17 @@ io.on('connection', function(socket){
         // console.log('user disconnected');
     });
 
-  socket.on('search', function(term){
+    socket.on('search', function(term){
 
         // console.log('search')
-    mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
-      // console.log("data", data)
+        mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
+            // console.log("data", data)
 
-      socket.emit('result', data)
+            socket.emit('result', data);
 
-    });
-    
-    function Player(){
+        });
         
-        return {
-
-            status: {
-                'now_playing' : null,
-                'error_offline_msg' : "Music Server is offline",
-                'playbackstatus':''
-            },
-            pause: function(){
-	        this.status.playbackstatus = 'PAUSED';
-	        mopidy.playback.pause();
-            },
-            play: function(track){
-	        this.status.playbackstatus = 'PLAYING';
-	        mopidy.playback.play();
-	        
-            },
-            playpause: function(req, res){
-	        if(this.status.playbackstatus == "PLAYING"){
-	            this.pause();
-	        }else{
-	            this.play();
-	        }
-            }
-        };
-    }
+    });
 
     var player = new Player();
     
@@ -76,18 +78,13 @@ io.on('connection', function(socket){
     });
     
     socket.on('add', function (song) {
-    
+        console.log(song)
         socket.broadcast.emit('new', song);
     });
     
-  });
-
-  socket.on('add', function (song) {
-    console.log(song)
-    socket.broadcast.emit('new', song)
-  })
-
 });
+
+
 
       // var uri = data[0].tracks[0].uri
       // console.log('uri', uri)
