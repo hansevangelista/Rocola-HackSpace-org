@@ -53,10 +53,6 @@ $(document).ready(function () {
 	}
     });
 
-
-
-	/* Swipes */
-
     $('.wraper').on("swiperight", function () {
 	$('.player').css('transform', 'translate(' +  0 + '%, 0) translateZ(0)');
 	$('.search').css('transform', 'translate(' +  0 + '%, 0) translateZ(0)');
