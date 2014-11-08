@@ -13,14 +13,14 @@ $(document).ready(function () {
     var artists = $('.artists');
 
     var trackTemplate = _.template($("#track").html());
-    var artistTemplate = _.template($("#artist").html());
+    // var artistTemplate = _.template($("#artist").html());
     var track1Template = _.template($("#track1").html());
 	
     $('.input').change(function () {
 	console.log('change');
     });
     
-    $('.player').click(function(){
+    $('.play').click(function(){
         socket.emit('playpause', "");  
         $('.musicbar').toggleClass('animate');
     });
@@ -44,44 +44,57 @@ $(document).ready(function () {
 
         trackList = {}
         
-	for (var i = 0; i < 3; i++) {
+    	for (var i = 0; i < 3; i++) {
 
-            var uri = result[0].tracks[i].uri;
+                var uri = result[0].tracks[i].uri;
 
-            trackList[uri] = {
-	        name: result[0].tracks[i].name,
-	        album: result[0].tracks[i].album.name,
-                uri: uri
-            };
-            
-	    $('.tracks').append(trackTemplate(trackList[uri]));
+                trackList[uri] = {
+                    name: result[0].tracks[i].name,
+                    album: result[0].tracks[i].album.name,
+                    uri: uri
+                };
+                
+                console.log('track', trackList[uri])
+    	    $('.tracks').append(trackTemplate(trackList[uri]));
 
-	    // var track = {
-	    //     name: result[0].tracks[i].name,
-	    //     album: result[0].tracks[i].album.name,
-	    //     uri: result[0].tracks[i].uri
-	    // };
+    	    // var track = {
+    	    //     name: result[0].tracks[i].name,
+    	    //     album: result[0].tracks[i].album.name,
+    	    //     uri: result[0].tracks[i].uri
+    	    // };
 
-	    // var artist = {
-	    //     name: result[0].artists[i].name
-	    // };
+    	    // var artist = {
+    	    //     name: result[0].artists[i].name
+    	    // };
 
-	    // $('.artists').append(artistTemplate(artist));
-	}
+    	    // $('.artists').append(artistTemplate(artist));
+    	}
         
         $('.addTrackButton').unbind('click');
-        $('.addTrackButton').click(function(event){
-            var selectedTrackUri = event.target.getAttribute('data-spotify-uri');
+
+        $('.addTrackButton').one('click',function(event) {
+            console.log('melaa')
+            var selectedTrackUri = this.getAttribute('data-spotify-uri');
             
-            console.log(selectedTrackUri);
-	    // socket.emit('add', selectedTrackUri);
+            console.log('jojo', selectedTrackUri);
+        // socket.emit('add', selectedTrackUri);
             
             var trackObject = trackList[selectedTrackUri];
-	    socket.emit('add', trackObject);
             
-	    $('.playlist').append(track1Template(trackObject));
+            console.log('jojo', trackList[selectedTrackUri]);
 
+	       socket.emit('add', trackObject);
+            
+           $('.playlist').append(track1Template(trackObject));
+
+           // $(this).children( ".fa-plus" ).toggle();
+           $(this).children().children('.fa-check').toggle();
+           $(this).children().children('.fa-plus').toggle();
         });
+
+        // $('.addTrackButton').click(function(event){
+
+        // });
 
     });
 

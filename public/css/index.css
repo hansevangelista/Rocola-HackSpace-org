@@ -57,6 +57,30 @@
 }
 .search .result {
   display: none;
+  background-color: rgba(0,0,0,0.8);
+}
+.search .result .tracks-title {
+  color: rgba(255,255,255,0.8);
+}
+.search .result .tracks {
+  padding: 1em;
+}
+.search .result .tracks .track {
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.8);
+  padding: 0.5em;
+  font-size: 0.8em;
+  display: table;
+}
+.search .result .tracks .track .name {
+  display: table-cell;
+  width: 100%;
+}
+.search .result .tracks .track .ckeck {
+  padding: 0.5em;
+}
+.search .result .tracks .track .ckeck .fa-check {
+  display: none;
 }
 .player .song {
   position: relative;

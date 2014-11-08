@@ -21,10 +21,10 @@
 				</div>
 			</header>
 			<div class="result">
-				<p>Tracks</p>
+				<!-- <p class="tracks-title">Tracks</p> -->
 				<div class="tracks"></div>
-				<p>Artists</p>
-				<div class="artists"></div>
+				<!-- <p class="artist-title">Artists</p> -->
+				<!-- <div class="artists"></div> -->
 			</div>
 		</div>
 		<div class="player">
@@ -97,10 +97,12 @@
 	</div>
 
 	<script type="text/template" id="track">
-		<div class="track">
-			<span class="name"><%= name %></span> - 
-			<span class="album"><%= album %></span> - 
-                        <button class="addTrackButton" data-spotify-uri="<%= uri %>" type="button">Add Me!</button>
+		<div class="track addTrackButton" data-spotify-uri="<%= uri %>">
+			<div class="name"><%= name %> - <%= album %></div>
+			<div class="ckeck">
+				<i class="fa fa-check"></i>
+				<i class="fa fa-plus"></i>
+			</div>
 		</div>
 	</script>
 
