@@ -37,6 +37,7 @@ $(document).ready(function () {
 	}
     });
 
+
     socket.on('result', function (result) {
         
 	// console.log('result', result[0].tracks[0].uri)
@@ -74,7 +75,12 @@ $(document).ready(function () {
             
             console.log(selectedTrackUri);
 	    // socket.emit('add', selectedTrackUri);
-	    socket.emit('add', trackList[selectedTrackUri]);
+            
+            var trackObject = trackList[selectedTrackUri];
+	    socket.emit('add', trackObject);
+            
+	    $('.playlist').append(track1Template(trackObject));
+
         });
 
     });
@@ -83,7 +89,13 @@ $(document).ready(function () {
 	console.log(track);
 	$('.playlist').append(track1Template(track));
     });
+    
+    socket.on('playpause', function(){
+        console.log('2');
 
+        $('.musicbar').toggleClass('animate');
+    });
+    
     /* Swipes */
 
     $('.wraper').on("swiperight", function () {

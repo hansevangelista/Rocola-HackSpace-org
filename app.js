@@ -75,7 +75,9 @@ io.on('connection', function(socket){
 
     
     socket.on('playpause', function(action){
+        console.log('1;');
         player.playpause();
+        socket.broadcast.emit('playpause');
     });
     
     socket.on('add', function (track) {
@@ -83,7 +85,10 @@ io.on('connection', function(socket){
         console.log('uri' + trackURI);
         mopidy.library.lookup(trackURI).then(function(trackToPlay) {
             // mopidy.tracklist.clear();
+
             socket.broadcast.emit('new', track);
+            // socket.emit('new', track);
+            
             console.log(track);
             mopidy.tracklist.add(trackToPlay);
             player.play();
