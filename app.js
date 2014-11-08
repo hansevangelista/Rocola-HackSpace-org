@@ -81,11 +81,11 @@ io.on('connection', function(socket){
     socket.on('add', function (track) {
         var trackURI = track.uri;
         console.log('uri' + trackURI);
-        mopidy.library.lookup(trackURI).then(function(track) {
+        mopidy.library.lookup(trackURI).then(function(trackToPlay) {
             // mopidy.tracklist.clear();
             socket.broadcast.emit('new', track);
             console.log(track);
-            mopidy.tracklist.add(track);
+            mopidy.tracklist.add(trackToPlay);
             player.play();
         });
     });
