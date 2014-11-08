@@ -15,7 +15,7 @@ app.get('/', function(req, res){
 
 var server = app.listen(4000, function () {
     console.log('server listening on port 4000');
-})
+});
 
 var Mopidy = require("mopidy");
 
@@ -28,7 +28,7 @@ var mopidy = new Mopidy({
 var io = require('socket.io')(server);
 
 function Player(){
-    
+        
     return {
 
         status: {
@@ -38,15 +38,19 @@ function Player(){
         },
         queue: [],
         current_track: null,
-        
+            
         pause: function(){
 	    this.status.playbackstatus = 'PAUSED';
+
 	    mopidy.playback.pause();
         },
         play: function(track){
 	    this.status.playbackstatus = 'PLAYING';
 	    mopidy.playback.play();
-	    
+        },
+        next: function(){
+	    this.status.playbackstatus = 'PLAYING';
+            mopidy.playback.next();
         },
         playpause: function(req, res){
 	    if(this.status.playbackstatus == "PLAYING"){
@@ -113,16 +117,16 @@ function Player(){
 	        
 	    });
 	},
-        _playbackStarted: function(track){
+        _playbackStarted: function(){
 
-	    this.status.now_playing = track;
+	    // this.status.now_playing = track;
 
 	    // self.emit('playback:started', track);
 
 	    console.log('playback:started');
 	},
 
-        _playbackEnded: function(lastTrack){
+        _playbackEnded: function(){
 
 	    // if(self.bomb_switch) {
 	    //     return;
@@ -157,13 +161,34 @@ function Player(){
 
 var player = new Player();
 
-// mopidy.on('event:trackPlaybackStarted', player._playbackStarted.bind(this));
-// mopidy.on('event:trackPlaybackEnded', player._playbackEnded.bind(this));
+mopidy.on('event:trackPlaybackEnded', function   (  ) {
+    console.log( 'ended' );
+    player._playbackStarted();
+});
+mopidy.on('event:trackPlaybackStarted', function (  ) {
+    console.log( 'lol' );
 
+    player._playbackStarted();
+});
+
+
+// mopidy.on(console.log.bind(console));
 
 io.on('connection', function(socket){
     
+    // for (var input in mopidy.playback){
+    //     console.log( input );
+    // }
 
+    // console.log( '-------------------------------' );
+
+    // console.log( mopidy.playback.onTracklistChange );
+
+    // mopidy.playback.onEndOfTrack(function(){
+    //     console.log('termino la cancion webonaa!!');
+    // });
+
+    
     // console.log(mopidy.playback.get)
     socket.emit('firstPlaylist', player);
 
@@ -213,6 +238,10 @@ io.on('connection', function(socket){
         }
     };
 
+    var newSong = function   ( player ) {
+        socket.broadcast.emit('newSong');
+    };
+
     socket.on('playpause', function(action){
         console.log('1;');
         player.playpause();
@@ -222,49 +251,32 @@ io.on('connection', function(socket){
             .done(printCurrentTrack);
     });
     
+    socket.on('next', function(){
+        player.next();
+    });
+
     socket.on('add', function (track) {
         var trackURI = track.uri;
         console.log( track );
 
-        // console.log('uri' + trackURI);
         mopidy.library.lookup(trackURI).then(function(trackToPlay) {
-
-            // mopidy.playlists.getPlaylists().then(function(playlists){
-            //     var playlist = playlists;
-            //     console.log('holi ' + playlists);
-            // });
-                                                 
 
             socket.broadcast.emit('new', track);
             player.queue.push(track);
             mopidy.tracklist.add(trackToPlay);
-	    if(this.status.playbackstatus != "PLAYING"){
+	    // if(this.status.playbackstatus != "PLAYING"){
+            //     player.play();
+            // }
+
+            console.log(player.queue.length);
+            if ( player.queue.length == 1){
+                console.log(player.status.playbackstatus);
+                socket.broadcast.emit('playpause', player.status.playbackstatus);
+                socket.emit('playpause', player.status.playbackstatus);
+                // newSong(player)
                 player.play();
             }
-
         });
     });
     
 });
-
-
-
-// var uri = data[0].tracks[0].uri
-// console.log('uri', uri)
-
-// mopidy.library.lookup(uri).then(function(track) {
-
-//   mopidy.tracklist.clear();
-
-//   mopidy.tracklist.add(track);
-
-//   play();
-
-// });
-// function play(){
-//   mopidy.playback.play()
-
-//   setTimeout(function () {
-//     // mopidy.playback.pause()
-//   }, 10000)
-// }

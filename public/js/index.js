@@ -43,8 +43,6 @@ $(document).ready(function () {
         
         trackList = result;
         
-        console.log( trackList );
-
         for (var track in trackList){
     	    $('.tracks').append(trackTemplate(trackList[track]));
         }
@@ -78,10 +76,19 @@ $(document).ready(function () {
 	$('.playlist').append(track1Template(track));
     });
     
-    socket.on('playpause', function(){
-        $('.musicbar').toggleClass('animate');
-        $('.play').fadeToggle();
+    socket.on('playpause', function(status){
+        console.log("SOLO");
+        if (status == "PLAYING"){
+            $('.musicbar').addClass('animate');
+            $('.play').fadeOut();
+        }
+        else if (status == "PAUSED"){
+            $('.musicbar').removeClass('animate');
+            $('.play').fadeIn();
+        }
     });
+    
+
     
     socket.on('firstPlaylist', function(player){
         var queue = player.queue;
@@ -92,6 +99,7 @@ $(document).ready(function () {
             $('.playlist').append(track1Template(queue[i]));
         }
         
+        if ( player.queue.length == 1){
         var status = player.status.playbackstatus;
         if ( status == "PLAYING"){
             $('.musicbar').addClass('animate');
@@ -100,6 +108,12 @@ $(document).ready(function () {
         else if (status == "PAUSED"){
             $('.musicbar').removeClass('animate');
             $('.play').fadeIn();
+        }
+        $('.bomb').click(function(e){
+            e.stopPropagation(); 
+            socket.emit('next');
+        });
+            
         }
     });
 
