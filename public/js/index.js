@@ -53,13 +53,19 @@ $(document).ready(function () {
 	    $('.tracks').append(trackTemplate(track));
 	    $('.artists').append(artistTemplate(artist));
 	}
+        
+        $('.addTrackButton').unbind('click');
+        $('.addTrackButton').click(function(event){
+            var selectedTrackUri = event.target.getAttribute('data-spotify-uri');
+            
+            console.log(selectedTrackUri);
+	    socket.emit('add', selectedTrackUri);
+        });
 
-	socket.emit('add', track);
     });
 
     socket.on('new', function (track) {
 	console.log(track);
-
 	$('.playlist').append(track1Template(track));
     });
 

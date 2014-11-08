@@ -52,6 +52,8 @@ function Player(){
     };
 }
 
+var player = new Player();
+
 io.on('connection', function(socket){
   // console.log('a user connected');
   
@@ -71,15 +73,19 @@ io.on('connection', function(socket){
         
     });
 
-    var player = new Player();
     
     socket.on('playpause', function(action){
         player.playpause();
     });
     
-    socket.on('add', function (song) {
-        console.log(song)
-        socket.broadcast.emit('new', song);
+    socket.on('add', function (trackURI) {
+        console.log(trackURI);
+        mopidy.library.lookup(trackURI).then(function(track) {
+            // mopidy.tracklist.clear();
+            socket.broadcast.emit('new', track);
+            mopidy.tracklist.add(track);
+            player.play();
+        });
     });
     
 });
