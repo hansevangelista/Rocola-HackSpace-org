@@ -28,9 +28,7 @@ var mopidy = new Mopidy({
 var io = require('socket.io')(server);
 
 function Player(){
-        
     return {
-
         status: {
             'now_playing' : null,
             'error_offline_msg' : "Music Server is offline",
@@ -51,6 +49,8 @@ function Player(){
         next: function(){
 	    this.status.playbackstatus = 'PLAYING';
             mopidy.playback.next();
+            console.log(mopidy.playback.next.params);
+            console.log(mopidy.playback.next.description);
         },
         playpause: function(req, res){
 	    if(this.status.playbackstatus == "PLAYING"){
@@ -59,7 +59,6 @@ function Player(){
 	        this.play();
 	    }
         },
-        
 	check4dup : function(uri){
 
 	    for (var x in this.queue) {
@@ -95,10 +94,7 @@ function Player(){
 
 
 		// p_callback.apply(self,[error,p_Track]);
-		
-		
 	    });
-
 	},
         lookupAndPlay: function(p_track){
 
@@ -125,7 +121,6 @@ function Player(){
 
 	    console.log('playback:started');
 	},
-
         _playbackEnded: function(){
 
 	    // if(self.bomb_switch) {
@@ -153,9 +148,7 @@ function Player(){
 
 	    // }
             console.log( 'chucha acabo una cancion \n' );
-
         }
-
     };
 }
 

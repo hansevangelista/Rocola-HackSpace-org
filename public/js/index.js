@@ -15,6 +15,7 @@ $(document).ready(function () {
     var trackTemplate = _.template($("#track").html());
     // var artistTemplate = _.template($("#artist").html());
     var track1Template = _.template($("#track1").html());
+    var songTemplate = _.template($("#current_song").html());
     
     $('.input').change(function () {
 	console.log('change');
@@ -59,6 +60,7 @@ $(document).ready(function () {
 
 	    socket.emit('add', trackObject);
             
+            $('.song').html(songTemplate(trackObject));
             $('.playlist').append(track1Template(trackObject));
 
             $(this).children().children('.fa-check').toggle();
@@ -73,6 +75,7 @@ $(document).ready(function () {
 
     socket.on('new', function (track) {
 	console.log(track);
+        $('.song').html(songTemplate(track));
 	$('.playlist').append(track1Template(track));
     });
     
@@ -94,26 +97,30 @@ $(document).ready(function () {
         var queue = player.queue;
         // here goes the rendering 
         // of the initial almbum and shift one track
-
+        
+        
         for( var i = 0 ; i < queue.length; i++){
             $('.playlist').append(track1Template(queue[i]));
         }
         
+        if (player.queue.length > 0 ){
+            $('.song').html(songTemplate(queue[0]));
+        }
+
         if ( player.queue.length == 1){
-        var status = player.status.playbackstatus;
-        if ( status == "PLAYING"){
-            $('.musicbar').addClass('animate');
-            $('.play').fadeOut();
-        }
-        else if (status == "PAUSED"){
-            $('.musicbar').removeClass('animate');
-            $('.play').fadeIn();
-        }
-        $('.bomb').click(function(e){
-            e.stopPropagation(); 
-            socket.emit('next');
-        });
-            
+            var status = player.status.playbackstatus;
+            if ( status == "PLAYING"){
+                $('.musicbar').addClass('animate');
+                $('.play').fadeOut();
+            }
+            else if (status == "PAUSED"){
+                $('.musicbar').removeClass('animate');
+                $('.play').fadeIn();
+            }
+            $('.bomb').click(function(e){
+                e.stopPropagation(); 
+                socket.emit('next');
+            });
         }
     });
 
