@@ -80,16 +80,14 @@ $(document).ready(function () {
         // socket.emit('add', selectedTrackUri);
             
             var trackObject = trackList[selectedTrackUri];
-            
-            console.log('jojo', trackList[selectedTrackUri]);
 
-	       socket.emit('add', trackObject);
+	    socket.emit('add', trackObject);
             
-           $('.playlist').append(track1Template(trackObject));
+            $('.playlist').append(track1Template(trackObject));
 
-           // $(this).children( ".fa-plus" ).toggle();
-           $(this).children().children('.fa-check').toggle();
-           $(this).children().children('.fa-plus').toggle();
+            // $(this).children( ".fa-plus" ).toggle();
+            $(this).children().children('.fa-check').toggle();
+            $(this).children().children('.fa-plus').toggle();
         });
 
         // $('.addTrackButton').click(function(event){

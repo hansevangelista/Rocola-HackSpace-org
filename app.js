@@ -1,5 +1,6 @@
 var express = require('express'),
-    swig = require('swig');
+    swig = require('swig'),
+    request = require('request');
 var app = express();
 
 app.engine('html', swig.renderFile);
@@ -33,6 +34,7 @@ function Player(){
             'error_offline_msg' : "Music Server is offline",
             'playbackstatus':''
         },
+        queue: [],
         pause: function(){
 	    this.status.playbackstatus = 'PAUSED';
 	    mopidy.playback.pause();
@@ -48,7 +50,44 @@ function Player(){
 	    }else{
 	        this.play();
 	    }
-        }
+        },
+        
+	check4dup : function(uri){
+
+	    for (var x in this.queue) {
+		if(this.queue[x].uri === uri) return true
+	    }
+
+	    return false;
+
+	},
+	getArt : function(p_track){
+
+	    request({
+		uri: "https://embed.spotify.com/oembed/?url="
+                    + p_track.uri,
+		method: "GET",
+		headers: {
+		    'User-Agent': 'Mozilla/5.0 '
+                        + '(Windows NT 6.1; Win64; x64; rv:25.0) '
+                        + 'Gecko/20100101 Firefox/25.0'
+		}
+	    }, function(error, response, body) {
+		
+		var response = JSON.parse(body);
+		var album_art_640 = function(str){
+		    str = str.split('cover');
+		    return str[0]+'640'+str[1];
+		}(response.thumbnail_url);
+
+		p_track.album.art = album_art_640;
+
+		// p_callback.apply(self,[error,p_track]);
+		
+		
+	    });
+
+	}
     };
 }
 
@@ -91,7 +130,9 @@ io.on('connection', function(socket){
             
             console.log(track);
             mopidy.tracklist.add(trackToPlay);
-            player.play();
+	    if(this.status.playbackstatus != "PLAYING"){
+                player.play();
+            }
         });
     });
     
@@ -99,18 +140,18 @@ io.on('connection', function(socket){
 
 
 
-      // var uri = data[0].tracks[0].uri
-      // console.log('uri', uri)
+// var uri = data[0].tracks[0].uri
+// console.log('uri', uri)
 
-      // mopidy.library.lookup(uri).then(function(track) {
+// mopidy.library.lookup(uri).then(function(track) {
             
-      //   mopidy.tracklist.clear();
+//   mopidy.tracklist.clear();
 
-      //   mopidy.tracklist.add(track);
+//   mopidy.tracklist.add(track);
       
-      //   play();
+//   play();
       
-      // });
+// });
 // function play(){
 //   mopidy.playback.play()
   
