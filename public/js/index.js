@@ -23,6 +23,7 @@ $(document).ready(function () {
     $('.song').click(function(){
         socket.emit('playpause', "");  
         $('.musicbar').toggleClass('animate');
+        $('.play').fadeToggle();
     });
 
     $('.input').keyup(function (e) {
@@ -44,7 +45,7 @@ $(document).ready(function () {
 
         trackList = {}
         
-    	for (var i = 0; i < 3; i++) {
+    	for (var i = 0; i < result[0].tracks.length; i++) {
 
                 var uri = result[0].tracks[i].uri;
 
@@ -105,6 +106,7 @@ $(document).ready(function () {
         console.log('2');
 
         $('.musicbar').toggleClass('animate');
+        $('.play').fadeToggle();
     });
     
     socket.on('firstPlaylist', function(data){
