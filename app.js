@@ -67,6 +67,7 @@ function Player(){
 	},
 	getArt : function(p_track){
 
+            console.log(p_track.uri);
 	    request({
 		uri: "https://embed.spotify.com/oembed/?url="
                     + p_track.uri,
@@ -84,9 +85,12 @@ function Player(){
 		    return str[0]+'640'+str[1];
 		}(response.thumbnail_url);
 
-		p_track.album.art = album_art_640;
+		p_track.albumArt = album_art_640;
 
-		// p_callback.apply(self,[error,p_track]);
+                // console.log(p_track.albumArt)
+
+
+		// p_callback.apply(self,[error,p_Track]);
 		
 		
 	    });
@@ -162,18 +166,39 @@ io.on('connection', function(socket){
     
     socket.emit('firstPlaylist', player.queue);
 
-    console.log(socket.id);
-    
-    socket.on('disconnect', function(){
-        // console.log('user disconnected');
-    });
 
     socket.on('search', function(term){
 
         // console.log('search')
         mopidy.library.search({any:[term]}, ['spotify:']).then(function(data){
-            // console.log("data", data)
-            socket.emit('result', data);
+            
+            var trackList = {};
+            
+            for( var i = 0; i < 10 ; i++){
+                var uri = data[0].tracks[i].uri;
+                trackList[uri] = {
+                    name: data[0].tracks[i].name,
+                    album: data[0].tracks[i].album.name,
+                    albumArt: null,
+                    uri: uri
+                };
+                player.getArt(trackList[uri]);
+            }
+
+            
+            setTimeout(function () {
+                console.log( "----------------------------" );
+                console.log( "------- SERVER -------------" );
+                console.log( "----------------------------" );
+
+                socket.emit('result', trackList);
+                console.log(trackList);
+                
+                console.log( "----------------------------" );
+                console.log( "------- END SERVER ---------" );
+                console.log( "----------------------------" );
+            }, 2000);
+
         });
         
     });
@@ -188,23 +213,26 @@ io.on('connection', function(socket){
     
     socket.on('add', function (track) {
         var trackURI = track.uri;
+        console.log( track );
+
         // console.log('uri' + trackURI);
         mopidy.library.lookup(trackURI).then(function(trackToPlay) {
-            // mopidy.tracklist.clear();
+            // var trackInfo = {
+            //     name: trackToPlay.name,
+            //     album: trackToPlay.album.name,
+            //     albumArt: null,
+            //     uri: trackURI
+            // };
 
-            socket.broadcast.emit('new', track);
-            // socket.emit('new', track);
+            // player.getArt(trackURI);
             
-            console.log(track);
-
             player.queue.push(track);
-            console.log( player.queue );
-            
             mopidy.tracklist.add(trackToPlay);
             // A veces uno es tan plebeyo
 	    if(this.status.playbackstatus != "PLAYING"){
                 player.play();
             }
+
         });
     });
     

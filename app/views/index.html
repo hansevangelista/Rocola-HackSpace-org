@@ -98,11 +98,12 @@
 
 	<script type="text/template" id="track">
 		<div class="track addTrackButton" data-spotify-uri="<%= uri %>">
-			<div class="name"><%= name %> - <%= album %></div>
-			<div class="ckeck">
-				<i class="fa fa-check"></i>
-				<i class="fa fa-plus"></i>
-			</div>
+		  <div class="name"><%= name %> - <%= album %></div>
+                  <!-- <figure class="avatar"><img src="<%= albumArt %>"></figure> -->
+		  <div class="ckeck">
+		    <i class="fa fa-check"></i>
+		    <i class="fa fa-plus"></i>
+		  </div>
 		</div>
 	</script>
 
@@ -115,7 +116,7 @@
 	<script type="text/template" id="track1">
 		<div class="track">
 			<div class="name"><%= name %> - <%= album %></div>
-			<figure class="avatar"><img src="img/avatar.jpg"></figure>
+			<figure class="avatar"><img src="<%= albumArt %>"></figure>
 		</div>
 	</script>
 

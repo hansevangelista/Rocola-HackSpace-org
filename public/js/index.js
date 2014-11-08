@@ -41,44 +41,21 @@ $(document).ready(function () {
 
     socket.on('result', function (result) {
         
-	// console.log('result', result[0].tracks[0].uri)
-
-        trackList = {}
+        trackList = result;
         
-    	for (var i = 0; i < result[0].tracks.length; i++) {
+        console.log( trackList );
 
-                var uri = result[0].tracks[i].uri;
-
-                trackList[uri] = {
-                    name: result[0].tracks[i].name,
-                    album: result[0].tracks[i].album.name,
-                    uri: uri
-                };
-                
-                console.log('track', trackList[uri])
-    	    $('.tracks').append(trackTemplate(trackList[uri]));
-
-    	    // var track = {
-    	    //     name: result[0].tracks[i].name,
-    	    //     album: result[0].tracks[i].album.name,
-    	    //     uri: result[0].tracks[i].uri
-    	    // };
-
-    	    // var artist = {
-    	    //     name: result[0].artists[i].name
-    	    // };
-
-    	    // $('.artists').append(artistTemplate(artist));
-    	}
+        for (var track in trackList){
+    	    $('.tracks').append(trackTemplate(trackList[track]));
+        }
         
         $('.addTrackButton').unbind('click');
-
         $('.addTrackButton').one('click',function(event) {
-            console.log('melaa')
             var selectedTrackUri = this.getAttribute('data-spotify-uri');
             
             console.log('jojo', selectedTrackUri);
-        // socket.emit('add', selectedTrackUri);
+            console.log( trackList );
+
             
             var trackObject = trackList[selectedTrackUri];
 
@@ -86,7 +63,6 @@ $(document).ready(function () {
             
             $('.playlist').append(track1Template(trackObject));
 
-            // $(this).children( ".fa-plus" ).toggle();
             $(this).children().children('.fa-check').toggle();
             $(this).children().children('.fa-plus').toggle();
         });
