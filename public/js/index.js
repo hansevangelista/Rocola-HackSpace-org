@@ -1,7 +1,7 @@
 var trackList ={};
 
 $(document).ready(function () {
-	
+    
     window.mpagesContainer = new MPages(document.querySelector('.wraper'), {
 	timeSlide: 500,
 	initPage: 1
@@ -15,7 +15,7 @@ $(document).ready(function () {
     var trackTemplate = _.template($("#track").html());
     // var artistTemplate = _.template($("#artist").html());
     var track1Template = _.template($("#track1").html());
-	
+    
     $('.input').change(function () {
 	console.log('change');
     });
@@ -79,16 +79,27 @@ $(document).ready(function () {
     });
     
     socket.on('playpause', function(){
-        console.log('2');
-
         $('.musicbar').toggleClass('animate');
         $('.play').fadeToggle();
     });
     
-    socket.on('firstPlaylist', function(data){
-        var len = data.length;
-        for( var i = 0 ; i < len; i++){
-            $('.playlist').append(track1Template(data[i]));
+    socket.on('firstPlaylist', function(player){
+        var queue = player.queue;
+        // here goes the rendering 
+        // of the initial almbum and shift one track
+
+        for( var i = 0 ; i < queue.length; i++){
+            $('.playlist').append(track1Template(queue[i]));
+        }
+        
+        var status = player.status.playbackstatus;
+        if ( status == "PLAYING"){
+            $('.musicbar').addClass('animate');
+            $('.play').fadeOut();
+        }
+        else if (status == "PAUSED"){
+            $('.musicbar').removeClass('animate');
+            $('.play').fadeIn();
         }
     });
 

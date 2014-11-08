@@ -162,9 +162,10 @@ var player = new Player();
 
 
 io.on('connection', function(socket){
-    // console.log('a user connected');
     
-    socket.emit('firstPlaylist', player.queue);
+
+    // console.log(mopidy.playback.get)
+    socket.emit('firstPlaylist', player);
 
 
     socket.on('search', function(term){
@@ -203,12 +204,22 @@ io.on('connection', function(socket){
         
     });
 
-    
+    var printCurrentTrack = function (track) {
+        if (track) {
+            console.log("Currently playing:", track.name, "by",
+                        track.artists[0].name, "from", track.album.name);
+        } else {
+            console.log("No current track");
+        }
+    };
+
     socket.on('playpause', function(action){
         console.log('1;');
-
         player.playpause();
-        socket.broadcast.emit('playpause');
+        socket.broadcast.emit('playpause', player.status.playbackstatus);
+        
+        mopidy.playback.getCurrentTrack()
+            .done(printCurrentTrack);
     });
     
     socket.on('add', function (track) {
@@ -217,18 +228,16 @@ io.on('connection', function(socket){
 
         // console.log('uri' + trackURI);
         mopidy.library.lookup(trackURI).then(function(trackToPlay) {
-            // var trackInfo = {
-            //     name: trackToPlay.name,
-            //     album: trackToPlay.album.name,
-            //     albumArt: null,
-            //     uri: trackURI
-            // };
 
-            // player.getArt(trackURI);
-            
+            // mopidy.playlists.getPlaylists().then(function(playlists){
+            //     var playlist = playlists;
+            //     console.log('holi ' + playlists);
+            // });
+                                                 
+
+            socket.broadcast.emit('new', track);
             player.queue.push(track);
             mopidy.tracklist.add(trackToPlay);
-            // A veces uno es tan plebeyo
 	    if(this.status.playbackstatus != "PLAYING"){
                 player.play();
             }
