@@ -78,11 +78,13 @@ io.on('connection', function(socket){
         player.playpause();
     });
     
-    socket.on('add', function (trackURI) {
-        console.log(trackURI);
+    socket.on('add', function (track) {
+        var trackURI = track.uri;
+        console.log('uri' + trackURI);
         mopidy.library.lookup(trackURI).then(function(track) {
             // mopidy.tracklist.clear();
             socket.broadcast.emit('new', track);
+            console.log(track);
             mopidy.tracklist.add(track);
             player.play();
         });
