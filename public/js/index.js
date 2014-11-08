@@ -107,6 +107,13 @@ $(document).ready(function () {
         $('.musicbar').toggleClass('animate');
     });
     
+    socket.on('firstPlaylist', function(data){
+        var len = data.length;
+        for( var i = 0 ; i < len; i++){
+            $('.playlist').append(track1Template(data[i]));
+        }
+    });
+
     /* Swipes */
 
     $('.wraper').on("swiperight", function () {
