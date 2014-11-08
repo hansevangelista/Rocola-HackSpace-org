@@ -20,7 +20,7 @@ $(document).ready(function () {
 	console.log('change');
     });
     
-    $('.play').click(function(){
+    $('.song').click(function(){
         socket.emit('playpause', "");  
         $('.musicbar').toggleClass('animate');
     });
